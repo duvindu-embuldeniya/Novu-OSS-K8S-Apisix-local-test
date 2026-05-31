@@ -18,8 +18,9 @@ helm install apisix-dashboard apisix/apisix-dashboard --namespace dev
 kubectl get pods -n dev -w
 
 # Step 6 — Port-forward (run each in a separate terminal)
-kubectl port-forward svc/apisix-gateway -n dev 9080:80
 kubectl port-forward svc/apisix-dashboard -n dev 9000:80
+kubectl port-forward svc/apisix-gateway -n dev 9080:80
+
 
 # Step 7 — Access
 #   Dashboard → http://localhost:9000  (admin / admin)

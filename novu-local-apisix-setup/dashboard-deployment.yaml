@@ -30,9 +30,9 @@ spec:
             - name: NODE_ENV
               value: "production"
             - name: VITE_API_HOSTNAME
-              value: "http://novu-api.dev.svc.cluster.local:3000"
+              value: "http://novu.test.internal:31350/api"
             - name: VITE_WEBSOCKET_HOSTNAME
-              value: "http://novu-ws.dev.svc.cluster.local:3002"
+              value: "http://novu.test.internal:31350/ws"
             - name: NOVU_SECRET_KEY
               value: "n0vuS3cr3tK3y!L0c@lD3v#2024$Key"
             - name: SENTRY_DSN

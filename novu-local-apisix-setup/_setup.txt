@@ -1,0 +1,56 @@
+Create upstreams & routes (all 3 routes keep as same url)
+
+Edit deployent manifests with correct urls
+
+C:\Windows\System32\drivers\etc\hosts
+127.0.0.1   novu.test.internal
+
+
+kubectl apply -f api-deployment.yaml
+kubectl apply -f api-service.yaml
+kubectl apply -f ws-deployment.yaml
+kubectl apply -f ws-service.yaml
+kubectl apply -f worker-deployment.yaml
+kubectl apply -f dashboard-deployment.yaml
+kubectl apply -f dashboard-service.yaml
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+
+kubectl get svc apisix-gateway -n dev
+Use whatever port appears after the colon in 80:XXXXX/TCP
+
+http://novu.test.internal:XXXXX
+Because apisix-gateway is the entry point for all traffic — it's the service that receives requests and routes them to the correct upstream.
+
+
+http://novu.test.internal:31350        → /* → novu-dashboard:4000
+http://novu.test.internal:31350/api/*  → /api/* → novu-api:3000
+http://novu.test.internal:31350/ws/*   → /ws/* → novu-ws:3002
+
+APISIX matches by URI priority — /api/* and /ws/* have higher priority (20) than /* (10), so specific routes match first
+and dashboard catches everything else.
+
+
+
+Browser (Windows)
+      │
+      │  http://novu.test.internal:31350
+      │
+      ▼
+Windows hosts file
+      │  resolves novu.test.internal → 127.0.0.1
+      │
+      ▼
+apisix-gateway (NodePort 31350)
+      │
+      │  matches route by host + URI
+      │
+      ├── /api/*  ──────────────────→ novu-api:3000
+      │   (strips /api prefix)
+      │
+      ├── /ws/*   ──────────────────→ novu-ws:3002
+      │   (websocket enabled)
+      │
+      └── /*      ──────────────────→ novu-dashboard:4000

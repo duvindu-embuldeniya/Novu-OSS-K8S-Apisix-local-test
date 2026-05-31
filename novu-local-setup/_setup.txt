@@ -31,10 +31,32 @@ kubectl port-forward svc/novu-api 3000:3000 -n dev
 # Terminal 3
 kubectl port-forward svc/novu-ws 3002:3002 -n dev
 
+--------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------
+Browser opens http://localhost:4000 → loads dashboard UI
+Dashboard UI (running in browser) reads VITE_API_HOSTNAME=http://localhost:3000
+Browser makes API call to localhost:3000 → port-forward catches it → forwards to novu-api pod inside cluster
+Browser makes WebSocket connection to localhost:3002 → port-forward catches it → forwards to novu-ws pod inside cluster
+All 3 port-forwards must be running simultaneously otherwise browser can't reach that service
+
+
+Browser (Windows)
+      │
+      ├── http://localhost:4000  ──→ port-forward ──→ novu-dashboard pod
+      │
+      ├── http://localhost:3000  ──→ port-forward ──→ novu-api pod
+      │
+      └── http://localhost:3002  ──→ port-forward ──→ novu-ws pod
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+
 
 
 
 # ── UNINSTALL ─────────────────────────────────────────────
+
+
+
 
 
 Delete all Novu manifests:
