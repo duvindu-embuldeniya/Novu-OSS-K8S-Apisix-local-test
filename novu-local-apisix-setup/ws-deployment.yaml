@@ -48,11 +48,11 @@ spec:
             - name: STORE_ENCRYPTION_KEY
               value: "nv0uEncryptK3y!@#$Dev2024%^&*Loc"
             - name: WS_URL
-              value: "ws://novu.test.internal:31350/ws"
+              value: "ws://novu.test.internal:8080/ws"
             - name: API_ROOT_URL
               value: "http://novu-api.dev.svc.cluster.local:3000"
             - name: FRONT_BASE_URL
-              value: "http://novu.test.internal:31350"
+              value: "http://novu.test.internal:8080"
             - name: NEW_RELIC_ENABLED
               value: "false"
             - name: NEW_RELIC_APP_NAME

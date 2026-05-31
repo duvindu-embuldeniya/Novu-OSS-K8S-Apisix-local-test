@@ -1,9 +1,18 @@
 Create upstreams & routes (all 3 routes keep as same url)
 
-Edit deployent manifests with correct urls
+
+Edit deployent manifests with correct routes:"8080"
+
 
 C:\Windows\System32\drivers\etc\hosts
 127.0.0.1   novu.test.internal
+
+
+PowerShell as Administrator:
+Get-Content C:\Windows\System32\drivers\etc\hosts | Select-String "novu"
+Add-Content -Path "C:\Windows\System32\drivers\etc\hosts" -Value "127.0.0.1   novu.test.internal"
+Get-Content C:\Windows\System32\drivers\etc\hosts | Select-String "novu"
+
 
 
 kubectl apply -f api-deployment.yaml
@@ -18,34 +27,36 @@ kubectl apply -f dashboard-service.yaml
 --------------------------------------------------------------------------------------------------------------------------
 
 
-kubectl get svc apisix-gateway -n dev
-Use whatever port appears after the colon in 80:XXXXX/TCP
 
-http://novu.test.internal:XXXXX
-Because apisix-gateway is the entry point for all traffic — it's the service that receives requests and routes them to the correct upstream.
+kubectl port-forward svc/apisix-gateway -n dev "8080":80
 
 
-http://novu.test.internal:31350        → /* → novu-dashboard:4000
-http://novu.test.internal:31350/api/*  → /api/* → novu-api:3000
-http://novu.test.internal:31350/ws/*   → /ws/* → novu-ws:3002
+http://novu.test.internal:8080
+Because apisix-gateway is the entry point for all traffic
+It's the service that receives requests and routes them to the correct upstream.
+
+
+http://novu.test.internal:8080        → /* → novu-dashboard:4000
+http://novu.test.internal:8080/api/*  → /api/* → novu-api:3000
+http://novu.test.internal:8080/ws/*   → /ws/* → novu-ws:3002
+
 
 APISIX matches by URI priority — /api/* and /ws/* have higher priority (20) than /* (10), so specific routes match first
 and dashboard catches everything else.
 
 
-
 Browser (Windows)
       │
-      │  http://novu.test.internal:31350
+      │  http://novu.test.internal:8080
       │
       ▼
 Windows hosts file
       │  resolves novu.test.internal → 127.0.0.1
       │
       ▼
-apisix-gateway (NodePort 31350)
+apisix-gateway
       │
-      │  matches route by host + URI
+      │ 
       │
       ├── /api/*  ──────────────────→ novu-api:3000
       │   (strips /api prefix)
