@@ -4,17 +4,14 @@ metadata:
   name: django-svc
   namespace: dev
   labels:
-    app: django-svc    # This will show Services with label app=nginx-svc
-                      # kubectl get svc -l app=nginx-svc
+    app: django-svc    
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:              
-    - port: 8000        # port on which the Service listens for incoming traffic.
+    - port: 8000        
       protocol: TCP
-      targetPort: 8000  # where traffic should re-direct
+      targetPort: 8000  
   selector: 
-    app: django        # service gonna looks pods have this label
+    app: django        
 
 
-#kubectl port-forward service/django-svc 8888:8000 -n dev
-#http://localhost:8888

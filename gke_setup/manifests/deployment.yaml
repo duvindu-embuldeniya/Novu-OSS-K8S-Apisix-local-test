@@ -11,11 +11,11 @@ spec:
   replicas: 2
   selector: 
     matchLabels: 
-      app: django # which pods to be managed
+      app: django 
   template:
     metadata:
       labels:
-        app: django # Ensures newly created Pods match the selector.
+        app: django 
     spec:
       containers:
       - name: django-container
@@ -30,36 +30,3 @@ spec:
           limits:
             cpu: "500m"
             memory: "512Mi"
-
-        # startupProbe:
-        #   httpGet:
-        #     path: /health/startup/
-        #     port: 8000
-        #   initialDelaySeconds: 0
-        #   periodSeconds: 5
-        #   timeoutSeconds: 5
-        #   failureThreshold: 60
-
-        # readinessProbe:
-        #   httpGet:
-        #     path: /health/ready/
-        #     port: 8000
-        #   initialDelaySeconds: 10
-        #   periodSeconds: 5
-        #   timeoutSeconds: 2
-        #   failureThreshold: 3
-
-        # livenessProbe:
-        #   httpGet:
-        #     path: /health/live/
-        #     port: 8000
-        #   initialDelaySeconds: 20
-        #   periodSeconds: 10
-        #   timeoutSeconds: 2
-        #   failureThreshold: 3
-
-
-# initialDelaySeconds → wait time before first check starts
-# periodSeconds → how often to run the check
-# timeoutSeconds → max time to wait for a response
-# failureThreshold → how many failures allowed before action (no traffic/restart)
