@@ -11,21 +11,21 @@ helm install apisix apisix/apisix --create-namespace --namespace dev
 # Step 3 — Wait for pods
 kubectl get pods -n dev -w
 
+
+
 # Step 4 — Install Dashboard
-helm install apisix-dashboard apisix/apisix-dashboard --namespace dev
+helm install apisix-dashboard apisix/apisix-dashboard --namespace dev --set resources.requests.cpu=250m --set resources.requests.memory=512Mi --set resources.limits.cpu=250m --set resources.limits.memory=512Mi
+kubectl port-forward svc/apisix-dashboard 8080:80 -n dev
+http://localhost:8080.
+
+(git bash)
+kubectl patch svc apisix-gateway -n dev -p '{"spec": {"type": "ClusterIP", "ports": [{"name": "apisix-gateway", "port": 80, "targetPort": 9080, "protocol": "TCP"}]}}'
+kubectl get svc apisix-gateway -n dev
+
+
 
 # Step 5 — Wait for dashboard pod
 kubectl get pods -n dev -w
-
-# Step 6 — Port-forward (run each in a separate terminal)
-kubectl port-forward svc/apisix-dashboard -n dev 9000:80
-kubectl port-forward svc/apisix-gateway -n dev 9080:80
-
-
-# Step 7 — Access
-#   Dashboard → http://localhost:9000  (admin / admin)
-#   Gateway   → http://localhost:9080
-
 
 
 
@@ -44,3 +44,6 @@ kubectl get all -n dev
 
 # Step 4 — Optional: remove helm repo
 helm repo remove apisix
+
+
+

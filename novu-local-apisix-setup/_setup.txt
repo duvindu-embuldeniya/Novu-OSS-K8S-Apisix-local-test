@@ -1,17 +1,9 @@
-Create upstreams & routes (all 3 routes keep as same url)
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
 
+helm install mongodb bitnami/mongodb --namespace dev --create-namespace --set auth.rootPassword=admin123 --set auth.username=novu --set auth.password=novu123 --set auth.database=novu
 
-Edit deployent manifests with correct routes:"8080"
-
-
-C:\Windows\System32\drivers\etc\hosts
-127.0.0.1   novu.test.internal
-
-
-PowerShell as Administrator:
-Get-Content C:\Windows\System32\drivers\etc\hosts | Select-String "novu"
-Add-Content -Path "C:\Windows\System32\drivers\etc\hosts" -Value "127.0.0.1   novu.test.internal"
-Get-Content C:\Windows\System32\drivers\etc\hosts | Select-String "novu"
+helm install redis bitnami/redis --namespace dev --set auth.password=NovuRedis2024 --set architecture=standalone
 
 
 
@@ -25,7 +17,18 @@ kubectl apply -f dashboard-service.yaml
 
 
 --------------------------------------------------------------------------------------------------------------------------
+Create upstreams & routes (all 3 routes keep as same url)
 
+Edit manifests with correct routes:"8080"
+ 
+C:\Windows\System32\drivers\etc\hosts
+127.0.0.1   novu.test.internal
+
+
+PowerShell as Administrator:
+Get-Content C:\Windows\System32\drivers\etc\hosts | Select-String "novu"
+Add-Content -Path "C:\Windows\System32\drivers\etc\hosts" -Value "127.0.0.1   novu.test.internal"
+Get-Content C:\Windows\System32\drivers\etc\hosts | Select-String "novu"
 
 
 kubectl port-forward svc/apisix-gateway -n dev "8080":80
@@ -65,3 +68,27 @@ apisix-gateway
       │   (websocket enabled)
       │
       └── /*      ──────────────────→ novu-dashboard:4000
+
+
+
+
+
+# ── UNINSTALL ─────────────────────────────────────────────
+
+
+Delete all Novu manifests:
+kubectl delete deployment novu-api novu-dashboard novu-worker novu-ws -n dev
+kubectl delete service novu-api novu-dashboard novu-ws -n dev
+
+
+Uninstall Helm releases:
+helm uninstall mongodb -n dev
+helm uninstall redis -n dev
+
+
+Wipe the namespace entirely:
+kubectl delete namespace dev
+
+
+Remove helm repo:
+helm repo remove bitnami
