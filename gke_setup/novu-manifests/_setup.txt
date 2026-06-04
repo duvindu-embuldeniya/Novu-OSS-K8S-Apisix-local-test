@@ -19,5 +19,6 @@ kubectl apply -f worker-deployment.yaml
 kubectl apply -f dashboard-deployment.yaml
 kubectl apply -f dashboard-service.yaml
 
-
+kubectl port-forward svc/novu-dashboard 4000:4000 -n dev
+http://localhost:4000
 --------------------------------------------------------------------------------------------------------------------------

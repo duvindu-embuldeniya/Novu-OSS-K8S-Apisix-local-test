@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: novu-api
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: novu-api
+  template:
+    metadata:
+      labels:
+        app: novu-api
+    spec:
+      containers:
+        - name: novu-api
+          image: ghcr.io/novuhq/novu/api:3.15.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "1024Mi"
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3000"
+            - name: DISABLE_TELEMETRY
+              value: "true"
+            - name: MONGO_URL
+              value: "mongodb://novu:novu123@mongodb.dev.svc.cluster.local:27017/novu"
+            - name: REDIS_URL
+              value: "redis://:NovuRedis2024@redis-master.dev.svc.cluster.local:6379"
+            - name: REDIS_HOST
+              value: "redis-master.dev.svc.cluster.local"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_PASSWORD
+              value: "NovuRedis2024"
+            - name: REDIS_CACHE_SERVICE_HOST
+              value: "redis-master.dev.svc.cluster.local"
+            - name: REDIS_CACHE_SERVICE_PORT
+              value: "6379"
+            - name: JWT_SECRET
+              value: "n0vuJ@tS3cr3tK3y!L0c@lD3v#2024$"
+            - name: STORE_ENCRYPTION_KEY
+              value: "nv0uEncryptK3y!@#$Dev2024%^&*Loc"
+            - name: API_ROOT_URL
+              value: "http://localhost:3000"
+            - name: FRONT_BASE_URL
+              value: "http://localhost:4000"
+            - name: CORS_ORIGIN
+              value: "http://localhost:4000"
+            - name: HOSTNAME
+              value: "0.0.0.0"
+            - name: STORAGE_SERVICE
+              value: "LOCAL"
+            - name: IS_API_EE_ENABLED
+              value: "false"
+            - name: NEW_RELIC_ENABLED
+              value: "false"
+            - name: NEW_RELIC_APP_NAME
+              value: "novu-api"
+            - name: SENTRY_DSN
+              value: ""
+            - name: LAUNCH_DARKLY_SDK_KEY
+              value: ""
+            - name: NODE_OPTIONS
+              value: "--max-old-space-size=768 --max-http-header-size=16384"
+            - name: STEP_RESOLVER_DISPATCH_URL
+              value: "http://localhost:3000"
+            - name: NOVU_SECRET_KEY
+              value: "n0vuS3cr3tK3y!L0c@lD3v#2024$Key"

@@ -14,7 +14,7 @@ kubectl get pods -n dev -w
 
 
 # Step 4 — Install Dashboard
-helm install apisix-dashboard apisix/apisix-dashboard --namespace dev --set resources.requests.cpu=250m --set resources.requests.memory=512Mi --set resources.limits.cpu=250m --set resources.limits.memory=512Mi
+helm install apisix-dashboard apisix/apisix-dashboard --namespace dev --set resources.requests.cpu=50m --set resources.requests.memory=128Mi --set resources.limits.cpu=250m --set resources.limits.memory=512Mi
 kubectl port-forward svc/apisix-dashboard 8080:80 -n dev
 http://localhost:8080.
 

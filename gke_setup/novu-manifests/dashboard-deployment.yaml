@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: novu-dashboard
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: novu-dashboard
+  template:
+    metadata:
+      labels:
+        app: novu-dashboard
+    spec:
+      containers:
+        - name: novu-dashboard
+          image: ghcr.io/novuhq/novu/dashboard:3.15.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4000
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: VITE_API_HOSTNAME
+              value: "http://localhost:3000"
+            - name: VITE_WEBSOCKET_HOSTNAME
+              value: "http://localhost:3002"
+            - name: NOVU_SECRET_KEY
+              value: "n0vuS3cr3tK3y!L0c@lD3v#2024$Key"
+            - name: SENTRY_DSN
+              value: ""
