@@ -1,49 +1,126 @@
-# ── INSTALL ──────────────────────────────────────────────
+================================================================================
+SETUP
+================================================================================
+
+1. Add Helm Repo
+
+   helm repo add apisix https://apache.github.io/apisix-helm-chart
+   helm repo update
+
+2. Install APISIX
+
+   helm install apisix apisix/apisix --create-namespace --namespace dev
+
+3. Wait for APISIX Pod
+
+   kubectl get pods -n dev -w
+   # Wait until apisix-* pod is Running
+
+4. Install Dashboard
+
+    helm install apisix-dashboard apisix/apisix-dashboard --namespace dev --set resources.requests.cpu=50m --set resources.requests.memory=128Mi --set resources.limits.cpu=250m --set resources.limits.memory=512Mi
+
+5. Wait for Dashboard Pod
+
+   kubectl get pods -n dev -w
+   # Wait until apisix-dashboard-* pod is Running
+
+   Access Dashboard Locally:
+   kubectl port-forward svc/apisix-dashboard -n dev 8080:80
+   # Open: http://localhost:8080
+   # Default credentials: admin / admin
+
+6. Convert Gateway Service to ClusterIP
+
+   kubectl patch svc apisix-gateway -n dev --type=json -p '[{"op":"remove","path":"/spec/ports/0/nodePort"},{"op":"replace","path":"/spec/type","value":"ClusterIP"}]'
+
+   # Verify
+   kubectl get svc apisix-gateway -n dev
+
+7. Apply BackendConfig
+
+   apisix-backendconfig.yaml:
+
+   apiVersion: cloud.google.com/v1
+   kind: BackendConfig
+   metadata:
+     name: apisix-healthcheck
+     namespace: dev
+   spec:
+     healthCheck:
+       requestPath: /health
+       port: 9080
+       type: HTTP
+
+   kubectl apply -f apisix-backendconfig.yaml
+
+8. Annotate Gateway Service
+
+    kubectl annotate svc apisix-gateway -n dev cloud.google.com/backend-config='{"default":"apisix-healthcheck"}' --overwrite
+
+9. Create Health Route in APISIX
+
+   Run these in separate terminals. The port-forwards must stay open while you run the curl.
+
+   Terminal 1 — get pod name + forward port 9180 (keep running):
+   # Get pod name first (use CMD or PowerShell, not Git Bash)
+   kubectl get pod -n dev -l app.kubernetes.io/name=apisix -o jsonpath="{.items[0].metadata.name}"
+
+   # Port-forward (keep this terminal open)
+   kubectl port-forward -n dev pod/<pod-name> 9180:9180
+
+   Terminal 2 — forward port 9080 (keep running):
+   kubectl port-forward -n dev pod/<pod-name> 9080:9080
+
+   Terminal 3 (git bash) — create the route:
+   curl -X PUT http://localhost:9180/apisix/admin/routes/health \
+     -H "X-API-KEY: edd1c9f034335f136f87ad84b625c8f1" \
+     -H "Content-Type: application/json" \
+     -d '{"uri":"/health","hosts":["*"],"plugins":{"mocking":{
+           "content_type":"text/plain","response_status":200,
+           "response_example":"ok"}},
+         "upstream":{"type":"roundrobin","nodes":{"127.0.0.1:1":1}}}'
+
+   Terminal 3 — verify:
+   curl http://localhost:9080/health
+   # Expected output: ok
+
+   Only proceed to Step 10 after curl returns 'ok'. Then close all port-forwards.
+
+10. Apply Ingress
+
+    GCP GCE Ingress does not support wildcard hosts(*). Add each subdomain explicitly.
 
 
-# Step 1 — Add helm repo 
-helm repo add apisix https://apache.github.io/apisix-helm-chart
-helm repo update
+11. Verify Healthy
 
-# Step 2 — Install APISIX
-helm install apisix apisix/apisix --create-namespace --namespace dev
+    Wait ~3 minutes after ingress is applied, then check:
 
-# Step 3 — Wait for pods
-kubectl get pods -n dev -w
+    kubectl describe ingress django-ingress -n dev
 
-
-
-# Step 4 — Install Dashboard
-helm install apisix-dashboard apisix/apisix-dashboard --namespace dev --set resources.requests.cpu=50m --set resources.requests.memory=128Mi --set resources.limits.cpu=250m --set resources.limits.memory=512Mi
-kubectl port-forward svc/apisix-dashboard 8080:80 -n dev
-http://localhost:8080.
-
-(git bash)
-kubectl patch svc apisix-gateway -n dev -p '{"spec": {"type": "ClusterIP", "ports": [{"name": "apisix-gateway", "port": 80, "targetPort": 9080, "protocol": "TCP"}]}}'
-kubectl get svc apisix-gateway -n dev
+    # Expected:
+    # "k8s1-...-dev-apisix-gateway-80-...": "HEALTHY"
+    # "k8s1-...-dev-django-svc-8000-...": "HEALTHY"
 
 
 
-# Step 5 — Wait for dashboard pod
-kubectl get pods -n dev -w
 
+================================================================================
+UNINSTALL
+================================================================================
 
+1. Uninstall Helm Releases
+   helm uninstall apisix -n dev
+   helm uninstall apisix-dashboard -n dev
 
-# ── UNINSTALL ─────────────────────────────────────────────
+2. Delete Namespace
+   kubectl delete namespace dev
 
+3. Verify Everything Gone
+   kubectl get all -n dev
 
-# Step 1 — Uninstall helm releases
-helm uninstall apisix -n dev
-helm uninstall apisix-dashboard -n dev
-
-# Step 2 — Delete namespace
-kubectl delete namespace dev
-
-# Step 3 — Verify everything gone
-kubectl get all -n dev
-
-# Step 4 — Optional: remove helm repo
-helm repo remove apisix
+4. Optional — Remove Helm Repo
+   helm repo remove apisix
 
 
 

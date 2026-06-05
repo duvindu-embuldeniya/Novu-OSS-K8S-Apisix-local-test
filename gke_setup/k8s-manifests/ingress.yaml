@@ -19,3 +19,13 @@ spec:
             name: django-svc
             port:
               number: 8000
+  - host: apisix.duvindu.org
+    http:
+      paths:
+      - path: /*
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: apisix-gateway
+            port:
+              number: 80
