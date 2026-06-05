@@ -28,6 +28,8 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = ['https://app.duvindu.org']
+
 
 # Application definition
 
@@ -123,7 +125,7 @@ USE_TZ = True
 # EMAIL_HOST_USER = "duvindu.me@gmail.com"
 # EMAIL_HOST_PASSWORD = ""
 
-NOVU_API_KEY = "9b69c676fe09b84884328ad4dfa9110b"
+NOVU_API_KEY = "5309b2a235673ddaceb4efcfa53ced9e"
 
 
 STATIC_URL = 'static/'

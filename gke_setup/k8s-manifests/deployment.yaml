@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: django-container
-        image: duvindune/backend:latest
+        image: duvindune/backend:v4
         ports:
           - containerPort: 8000
 

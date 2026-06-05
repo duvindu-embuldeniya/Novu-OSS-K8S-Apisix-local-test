@@ -9,7 +9,7 @@ from django.conf import settings
 def send_welcome_notification(sender, instance, created, *args, **kwargs):
     if created:
         try:
-            url = "http://novu.paynsure.internal/api/v1/events/trigger"
+            url = "http://novu.duvindu.org/api/v1/events/trigger"
             headers = {
                 "Authorization": f"ApiKey {settings.NOVU_API_KEY}",
                 "Content-Type": "application/json",
