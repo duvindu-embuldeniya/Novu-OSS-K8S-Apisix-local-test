@@ -121,7 +121,7 @@ USE_TZ = True
 # EMAIL_PORT = 587
 # EMAIL_USE_TLS = True
 # EMAIL_HOST_USER = "duvindu.me@gmail.com"
-# EMAIL_HOST_PASSWORD = "avmb nipo ebnc mktg"
+# EMAIL_HOST_PASSWORD = ""
 
 NOVU_API_KEY = "9b69c676fe09b84884328ad4dfa9110b"
 
