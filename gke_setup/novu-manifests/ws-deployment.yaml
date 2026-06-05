@@ -48,11 +48,11 @@ spec:
             - name: STORE_ENCRYPTION_KEY
               value: "nv0uEncryptK3y!@#$Dev2024%^&*Loc"
             - name: WS_URL
-              value: "http://localhost:3002"
+              value: "ws://novu.duvindu.org/ws"
             - name: API_ROOT_URL
               value: "http://novu-api.dev.svc.cluster.local:3000"
             - name: FRONT_BASE_URL
-              value: "http://localhost:4000"
+              value: "http://novu.duvindu.org"
             - name: NEW_RELIC_ENABLED
               value: "false"
             - name: NEW_RELIC_APP_NAME

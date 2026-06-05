@@ -52,11 +52,11 @@ spec:
             - name: STORE_ENCRYPTION_KEY
               value: "nv0uEncryptK3y!@#$Dev2024%^&*Loc"
             - name: API_ROOT_URL
-              value: "http://localhost:3000"
+              value: "http://novu.duvindu.org/api"
             - name: FRONT_BASE_URL
-              value: "http://localhost:4000"
+              value: "http://novu.duvindu.org"
             - name: CORS_ORIGIN
-              value: "http://localhost:4000"
+              value: "http://novu.duvindu.org"
             - name: HOSTNAME
               value: "0.0.0.0"
             - name: STORAGE_SERVICE
@@ -74,6 +74,6 @@ spec:
             - name: NODE_OPTIONS
               value: "--max-old-space-size=768 --max-http-header-size=16384"
             - name: STEP_RESOLVER_DISPATCH_URL
-              value: "http://localhost:3000"
+              value: "http://novu.duvindu.org/api"
             - name: NOVU_SECRET_KEY
               value: "n0vuS3cr3tK3y!L0c@lD3v#2024$Key"
