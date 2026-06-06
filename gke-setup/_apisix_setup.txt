@@ -32,6 +32,7 @@ SETUP
 
 6. Convert Gateway Service to ClusterIP
 
+   (git bash)
    kubectl patch svc apisix-gateway -n dev --type=json -p '[{"op":"remove","path":"/spec/ports/0/nodePort"},{"op":"replace","path":"/spec/type","value":"ClusterIP"}]'
 
    # Verify
@@ -55,7 +56,8 @@ SETUP
    kubectl apply -f apisix-backendconfig.yaml
 
 8. Annotate Gateway Service
-
+    
+    (git bash)
     kubectl annotate svc apisix-gateway -n dev cloud.google.com/backend-config='{"default":"apisix-healthcheck"}' --overwrite
 
 9. Create Health Route in APISIX
@@ -124,3 +126,36 @@ UNINSTALL
 
 
 
+
+
+================================================================================
+{
+  "nodes": [
+    {
+      "host": "apisix-dashboard.dev.svc.cluster.local",
+      "port": 80,
+      "weight": 1
+    }
+  ],
+  "type": "roundrobin",
+  "scheme": "http",
+  "name": "apisix-dashboard-upstream"
+}
+================================================================================
+{
+  "uri": "/*",
+  "name": "apisix-dashboard-route",
+  "methods": [
+    "GET",
+    "POST",
+    "PUT",
+    "DELETE",
+    "PATCH",
+    "OPTIONS",
+    "HEAD"
+  ],
+  "host": "apisix.duvindu.org",
+  "upstream_id": "622769694289429142",
+  "status": 1
+}
+================================================================================

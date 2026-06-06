@@ -9,6 +9,16 @@ metadata:
     networking.gke.io/managed-certificates: django-mc
 spec:
   rules:
+  - host: duvindu.org
+    http:
+      paths:
+      - path: /*
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: django-svc
+            port:
+              number: 8000
   - host: www.duvindu.org
     http:
       paths:

@@ -5,6 +5,6 @@ metadata:
   namespace: dev
 spec:
   healthCheck:
-    requestPath: /apisix/status
+    requestPath: /health
     port: 9080
     type: HTTP
